@@ -24,6 +24,15 @@ export class QuoteRepository {
 
   findAll() {
     return prisma.quote.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            fullName: true,
+            email: true,
+          },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },

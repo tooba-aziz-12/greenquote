@@ -1,8 +1,12 @@
 "use client";
 
+import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 export default function QuotePage() {
+  const { data: session } = useSession();
+
   const [address, setAddress] = useState("");
   const [monthlyConsumptionKwh, setMonthlyConsumptionKwh] = useState("");
   const [systemSizeKw, setSystemSizeKw] = useState("");
@@ -41,14 +45,39 @@ export default function QuotePage() {
 
   return (
     <main className="mx-auto max-w-2xl p-8">
-      <h1 className="mb-6 text-3xl font-bold">Solar Quote</h1>
+      <div className="mb-6 flex gap-4">
+        <Link
+          href="/quotes"
+          className="rounded bg-gray-200 px-4 py-2"
+        >
+          My Quotes
+        </Link>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+        {session?.user?.role === "ADMIN" && (
+          <Link
+            href="/admin/quotes"
+            className="rounded bg-gray-200 px-4 py-2"
+          >
+            Admin Quotes
+          </Link>
+        )}
+      </div>
+
+      <h1 className="mb-6 text-3xl font-bold">
+        Solar Quote
+      </h1>
+
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4"
+      >
         <input
           className="w-full rounded border p-2"
           placeholder="Address"
           value={address}
-          onChange={(e) => setAddress(e.target.value)}
+          onChange={(e) =>
+            setAddress(e.target.value)
+          }
         />
 
         <input
@@ -56,7 +85,11 @@ export default function QuotePage() {
           type="number"
           placeholder="Monthly Consumption (kWh)"
           value={monthlyConsumptionKwh}
-          onChange={(e) => setMonthlyConsumptionKwh(e.target.value)}
+          onChange={(e) =>
+            setMonthlyConsumptionKwh(
+              e.target.value
+            )
+          }
         />
 
         <input
@@ -64,7 +97,11 @@ export default function QuotePage() {
           type="number"
           placeholder="System Size (kW)"
           value={systemSizeKw}
-          onChange={(e) => setSystemSizeKw(e.target.value)}
+          onChange={(e) =>
+            setSystemSizeKw(
+              e.target.value
+            )
+          }
         />
 
         <input
@@ -72,7 +109,11 @@ export default function QuotePage() {
           type="number"
           placeholder="Down Payment"
           value={downPayment}
-          onChange={(e) => setDownPayment(e.target.value)}
+          onChange={(e) =>
+            setDownPayment(
+              e.target.value
+            )
+          }
         />
 
         <button
@@ -83,36 +124,67 @@ export default function QuotePage() {
         </button>
       </form>
 
-      {error && <p className="mt-4 text-red-500">{error}</p>}
+      {error && (
+        <p className="mt-4 text-red-500">
+          {error}
+        </p>
+      )}
 
       {quote && (
         <div className="mt-8 rounded border p-4">
-          <h2 className="mb-4 text-xl font-bold">Quote Result</h2>
+          <h2 className="mb-4 text-xl font-bold">
+            Quote Result
+          </h2>
 
           <p>
-            <strong>System Price:</strong> ${quote.systemPrice}
+            <strong>System Price:</strong> $
+            {quote.systemPrice}
           </p>
 
           <p>
-            <strong>Principal Amount:</strong> ${quote.principalAmount}
+            <strong>
+              Principal Amount:
+            </strong>{" "}
+            ${quote.principalAmount}
           </p>
 
           <p>
-            <strong>Risk Band:</strong> {quote.riskBand}
+            <strong>Risk Band:</strong>{" "}
+            {quote.riskBand}
           </p>
 
           <div className="mt-4">
-            <h3 className="mb-2 font-semibold">Loan Offers</h3>
+            <h3 className="mb-2 font-semibold">
+              Loan Offers
+            </h3>
 
-            {quote.offers.map((offer: any, index: number) => (
-              <div key={index} className="mb-2 rounded border p-2">
-                <p>{offer.termYears} Year Loan</p>
+            {quote.offers.map(
+              (
+                offer: any,
+                index: number
+              ) => (
+                <div
+                  key={index}
+                  className="mb-2 rounded border p-2"
+                >
+                  <p>
+                    {offer.termYears} Year
+                    Loan
+                  </p>
 
-                <p>APR: {offer.apr}%</p>
+                  <p>
+                    APR: {offer.apr}%
+                  </p>
 
-                <p>Monthly Payment: ${offer.monthlyPayment}</p>
-              </div>
-            ))}
+                  <p>
+                    Monthly Payment: $
+                    {
+                      offer.monthlyPayment
+                    }
+                  </p>
+                </div>
+              )
+            )}
           </div>
         </div>
       )}
