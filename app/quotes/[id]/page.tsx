@@ -80,7 +80,7 @@ export default async function QuoteDetailsPage({
           </h2>
 
           <div className="space-y-4">
-            {quote.offers.map(
+            {(quote.offers as any[]).map(
               (offer, index) => (
                 <div
                   key={index}
