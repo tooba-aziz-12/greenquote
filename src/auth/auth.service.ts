@@ -2,17 +2,10 @@ import bcrypt from "bcryptjs";
 import { UserRepository } from "./user.repository";
 
 export class AuthService {
-  constructor(
-    private readonly userRepository = new UserRepository()
-  ) {}
+  constructor(private readonly userRepository = new UserRepository()) {}
 
-  async register(
-    fullName: string,
-    email: string,
-    password: string
-  ) {
-    const existingUser =
-      await this.userRepository.findByEmail(email);
+  async register(fullName: string, email: string, password: string) {
+    const existingUser = await this.userRepository.findByEmail(email);
 
     if (existingUser) {
       throw new Error("Email already exists");
@@ -34,10 +27,7 @@ export class AuthService {
       return null;
     }
 
-    const passwordMatches = await bcrypt.compare(
-      password,
-      user.passwordHash
-    );
+    const passwordMatches = await bcrypt.compare(password, user.passwordHash);
 
     if (!passwordMatches) {
       return null;

@@ -69,11 +69,7 @@ export default function RegisterPage() {
         </button>
       </form>
 
-      {message && (
-        <p className="mt-4 text-sm">
-          {message}
-        </p>
-      )}
+      {message && <p className="mt-4 text-sm">{message}</p>}
     </main>
   );
 }

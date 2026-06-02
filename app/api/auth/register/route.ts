@@ -9,10 +9,7 @@ export async function POST(request: Request) {
   const result = registerSchema.safeParse(body);
 
   if (!result.success) {
-    return NextResponse.json(
-      { error: "Invalid request" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
 
   const { fullName, email, password } = result.data;
@@ -20,11 +17,7 @@ export async function POST(request: Request) {
   const authService = new AuthService();
 
   try {
-    const user = await authService.register(
-      fullName,
-      email,
-      password
-    );
+    const user = await authService.register(fullName, email, password);
 
     return NextResponse.json(
       {
@@ -32,12 +25,12 @@ export async function POST(request: Request) {
         fullName: user.fullName,
         email: user.email,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     return NextResponse.json(
       { error: "Email already exists" },
-      { status: 409 }
+      { status: 409 },
     );
   }
 }

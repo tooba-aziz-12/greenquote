@@ -7,11 +7,7 @@ export class UserRepository {
     });
   }
 
-  create(data: {
-    fullName: string;
-    email: string;
-    passwordHash: string;
-  }) {
+  create(data: { fullName: string; email: string; passwordHash: string }) {
     return prisma.user.create({
       data,
     });

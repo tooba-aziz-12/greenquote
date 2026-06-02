@@ -22,7 +22,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const user = await authService.login(
           credentials.email as string,
-          credentials.password as string
+          credentials.password as string,
         );
 
         if (!user) {

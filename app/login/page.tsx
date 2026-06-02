@@ -11,6 +11,8 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
+    setMessage("");
+
     const result = await signIn("credentials", {
       email,
       password,
@@ -22,7 +24,7 @@ export default function LoginPage() {
       return;
     }
 
-    window.location.href = "/";
+    window.location.href = "/quote";
   }
 
   return (
@@ -54,11 +56,7 @@ export default function LoginPage() {
         </button>
       </form>
 
-      {message && (
-        <p className="mt-4 text-sm text-red-500">
-          {message}
-        </p>
-      )}
+      {message && <p className="mt-4 text-sm text-red-500">{message}</p>}
     </main>
   );
 }
