@@ -111,14 +111,26 @@ http://localhost:3001
 
 ## API Endpoints
 
-```text
-POST   /api/auth/register
-POST   /api/quotes
-GET    /api/quotes
-GET    /api/quotes/{id}
-GET    /api/admin/quotes
-GET    /api/health
-```
+### POST /api/auth/register
+Registers a new user.
+
+### POST /api/auth/[...nextauth]
+Handles login, logout, and session management through NextAuth.
+
+### POST /api/quotes
+Creates a new financing quote.
+
+### GET /api/quotes
+Returns quotes belonging to the authenticated user.
+
+### GET /api/quotes/{id}
+Returns a specific quote. Ownership enforced.
+
+### GET /api/admin/quotes
+Returns all quotes. Admin only.
+
+### GET /api/health
+Health check endpoint.
 
 ## Architecture
 
