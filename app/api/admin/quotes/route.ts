@@ -7,24 +7,38 @@ export async function GET() {
   const session = await auth();
 
   if (!session?.user) {
+    console.warn("Unauthorized admin quote access attempt");
+
     return NextResponse.json(
       { error: "Unauthorized" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
   if (session.user.role !== "ADMIN") {
+    console.warn("Forbidden admin quote access attempt", {
+      userId: session.user.id,
+      role: session.user.role,
+    });
+
     return NextResponse.json(
       { error: "Forbidden" },
-      { status: 403 }
+      { status: 403 },
     );
   }
 
-  const quoteRepository =
-    new QuoteRepository();
+  console.info("Admin quote list requested", {
+    userId: session.user.id,
+  });
 
-  const quotes =
-    await quoteRepository.findAll();
+  const quoteRepository = new QuoteRepository();
+
+  const quotes = await quoteRepository.findAll();
+
+  console.info("Admin quote list returned", {
+    userId: session.user.id,
+    quoteCount: quotes.length,
+  });
 
   return NextResponse.json(quotes);
 }

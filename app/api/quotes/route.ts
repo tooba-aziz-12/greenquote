@@ -9,7 +9,12 @@ export async function POST(request: Request) {
   const session = await auth();
 
   if (!session?.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    console.warn("Unauthorized quote creation attempt");
+
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 },
+    );
   }
 
   const body = await request.json();
@@ -17,8 +22,19 @@ export async function POST(request: Request) {
   const result = createQuoteSchema.safeParse(body);
 
   if (!result.success) {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    console.warn("Quote validation failed", {
+      userId: session.user.id,
+    });
+
+    return NextResponse.json(
+      { error: "Invalid request" },
+      { status: 400 },
+    );
   }
+
+  console.info("Quote creation requested", {
+    userId: session.user.id,
+  });
 
   const quoteService = new QuoteService();
 
@@ -32,26 +48,44 @@ export async function POST(request: Request) {
     ...quoteResult,
   });
 
-  return NextResponse.json(quote, { status: 201 });
+  console.info("Quote created successfully", {
+    quoteId: quote.id,
+    userId: session.user.id,
+    riskBand: quote.riskBand,
+  });
+
+  return NextResponse.json(
+    quote,
+    { status: 201 },
+  );
 }
 
 export async function GET() {
   const session = await auth();
 
   if (!session?.user) {
+    console.warn("Unauthorized quote list access attempt");
+
     return NextResponse.json(
       { error: "Unauthorized" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
-  const quoteRepository =
-    new QuoteRepository();
+  console.info("Quote list requested", {
+    userId: session.user.id,
+  });
 
-  const quotes =
-    await quoteRepository.findByUserId(
-      session.user.id
-    );
+  const quoteRepository = new QuoteRepository();
+
+  const quotes = await quoteRepository.findByUserId(
+    session.user.id,
+  );
+
+  console.info("Quote list returned", {
+    userId: session.user.id,
+    quoteCount: quotes.length,
+  });
 
   return NextResponse.json(quotes);
 }
